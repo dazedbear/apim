@@ -10,7 +10,7 @@ class App extends Component {
   componentDidMount = () => {    
     SwaggerUI({
       dom_id: '#swagger-ui',
-      url: '/swagger.yaml'
+      url: `${process.env.REACT_APP_SITE_URL}/swagger.yaml`
     })
   }
   
