@@ -1,0 +1,23 @@
+{
+  "name": "einfach-studio-api-playground",
+  "version": "0.0.1",
+  "description": "Einfach Studio 開發與測試 API 的遊樂場，僅提供學習與測試使用，內容隨時會更動，請勿在 Production 使用。",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "start": "cross-env NODE_ENV=development node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^1.0.1"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0"
+  }
+}
