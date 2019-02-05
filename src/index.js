@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import SwaggerUI from 'swagger-ui';
+import "swagger-ui/dist/swagger-ui.css";
+import './index.scss';
 import * as serviceWorker from './serviceWorker';
+
+
+class App extends Component {
+  componentDidMount = () => {    
+    SwaggerUI({
+      dom_id: '#swagger-ui',
+      url: '/swagger.yaml'
+    })
+  }
+  
+  render() {
+    return (
+      <div id="swagger-ui" />
+    );
+  }
+}
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
