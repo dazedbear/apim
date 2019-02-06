@@ -1,0 +1,21 @@
+{
+  "name": "movie-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "yarn && node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {
+    "adm-zip": "^0.4.13",
+    "chalk": "^2.4.2",
+    "fs-extra": "^7.0.1"
+  }
+}
