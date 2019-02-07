@@ -237,6 +237,13 @@ components:
       properties:
         error:
           type: "object"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
 externalDocs:
   description: "Github"
   url: "https://github.com/einfach-studio"
+security:
+  - ApiKeyAuth: []
