@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const dayjs = require('dayjs');
 const redis = require('redis');
 const { promisify } = require('util');
-const { resTemplate, warnTemplate, errorTemplate, validationError, pagingModel } = require('./util');
+const { resTemplate, warnTemplate, errorTemplate, validationError, pagingModel } = require('/opt/nodejs/util');
 
 const openDataAPI = 'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=8';
 
