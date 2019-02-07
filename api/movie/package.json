@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "build": "yarn && node build.js"
+    "start": "yarn && node index.js",
+    "build": "bash ./build.sh"
   },
   "keywords": [],
   "author": "",
@@ -14,10 +14,5 @@
     "dayjs": "^1.8.4",
     "node-fetch": "^2.3.0",
     "redis": "^2.8.0"
-  },
-  "devDependencies": {
-    "adm-zip": "^0.4.13",
-    "chalk": "^2.4.2",
-    "fs-extra": "^7.0.1"
   }
 }

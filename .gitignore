@@ -11,8 +11,8 @@
 
 # production
 /build
-/**/build
-/**/build.zip
+/**/nodejs
+/**/nodejs.zip
 
 # misc
 .DS_Store
