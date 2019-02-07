@@ -23,9 +23,17 @@ const pagingModel = (rawList = [], dataList = [], offset = 0) => ({
   total: rawList.length,
 })
 
+const validationError = (message = '', code = 0) => {
+	let e = new Error(message);
+	e.isUserError = true;
+	e.code = code;
+	return e;
+}
+
 module.exports = {
   resTemplate,
   warnTemplate,
   errorTemplate,
-  pagingModel,
+	pagingModel,
+	validationError,
 }
