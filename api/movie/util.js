@@ -41,7 +41,11 @@ const lambdaProxyResponse = (custom = {}) => {
 		isBase64Encoded: false,
 		statusCode: 200,
 		headers: {
-			"Content-Type": 'application/json'
+			"Content-Type": 'application/json',
+			"Access-Control-Allow-Origin" : "*",
+			"Access-Control-Allow-Credentials" : true,
+			"Access-Control-Allow-Methods": "GET, OPTIONS",
+			"Access-Control-Allow-Headers": 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
 		},
 		multiValueHeaders: {},
 		body: null
