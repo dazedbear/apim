@@ -30,10 +30,32 @@ const validationError = (message = '', code = 0) => {
 	return e;
 }
 
+/**
+ * 啟用 lambda 代理整合的輸出 (return)
+ * https://docs.aws.amazon.com/zh_tw/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-output-format
+ * 
+ * NOTE: response 本身不用 JSON.stringify, 但 body 內容一定要是 JSON 字串
+ */ 
+const lambdaProxyResponse = (custom = {}) => {
+	const defaultResponse = {
+		isBase64Encoded: false,
+		statusCode: 200,
+		headers: {
+			"Content-Type": 'application/json'
+		},
+		multiValueHeaders: {},
+		body: null
+	}
+	let response = Object.assign({}, defaultResponse, custom);
+	response.body = JSON.stringify(response.body);
+	return response;
+}
+
 module.exports = {
   resTemplate,
   warnTemplate,
   errorTemplate,
 	pagingModel,
 	validationError,
+	lambdaProxyResponse,
 }
