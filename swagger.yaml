@@ -65,6 +65,10 @@ paths:
                         type: "boolean"
         400:
           $ref: "#/components/responses/Warning"
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+        403:
+          $ref: "#/components/responses/UnauthorizedError"
         500:
           $ref: "#/components/responses/Error"
 components:
@@ -93,6 +97,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PagingModel'
+    UnauthorizedError:
+      description: "API key is missing or invalid"
+      headers:
+        WWW_Authenticate:
+          schema:
+            type: "string"
   schemas:
     # 場次資訊
     ShowInfo:
