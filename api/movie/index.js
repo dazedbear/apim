@@ -82,12 +82,15 @@ exports.handler = async (event, context) => {
         }
         // 取得電影原始資料
         return fetch(openDataAPI, option)
-          .then(res => res.json())
+          .then(res => res.ok ? res.json() : Promise.reject(res))
           // 存進 redis，設定一天後過期
-          .then(rawData => Promise.all([
-            rawData,
-            setAsync('movieRawData', rawData)
-          ]))
+          .then(rawData => {
+            console.log('Recieve data from government open data success!');
+            return Promise.all([
+              rawData,
+              setAsync('movieRawData', JSON.stringify(rawData))
+            ])
+           })
           .then(([rawData, reply]) => Promise.all([
             rawData,
             expireAsync('movieRawData', 86400)
@@ -96,12 +99,14 @@ exports.handler = async (event, context) => {
             console.log('Refresh movie cache data success!');
             return rawData;
           })
-          .catch(e => e);
+          .catch(e => {
+            redisClient.end(true)
+            return Promise.reject(e);
+          });
       }
-      return Promise.resolve(movieCacheData)
+      return JSON.parse(movieCacheData);
     })
-    .then(rawData => {
-      const movies = JSON.parse(rawData);
+    .then(movies => {
       // 帶入 API Gateway 的參數得到電影列表
       const { limit, offset } = (event.queryStringParameters || {})
       const { sortType } = (event.pathParameters || {})
@@ -127,5 +132,12 @@ exports.handler = async (event, context) => {
         body: e.isUserError ? warnTemplate(e.message, e.code) : errorTemplate(e.message, e)
       })
     })
+  await redisClient.quit((err, reply) => {
+    if (err) {
+      console.error(err);
+      return redisClient.end(true);
+    }
+    console.log('Close connection with redis server success!');
+  });
   return result;
 }
