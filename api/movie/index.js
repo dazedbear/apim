@@ -3,7 +3,7 @@
  */
 const dayjs = require('dayjs');
 const { resTemplate, warnTemplate, errorTemplate, validationError, pagingModel, lambdaProxyResponse } = require('/opt/nodejs/util');
-const { rawMovieList } = require('/opt/nodejs/mock');
+const { rawMovieList } = require('/opt/mock');
 
 /**
  * 排序並取得指定長度與位置的電影列表
