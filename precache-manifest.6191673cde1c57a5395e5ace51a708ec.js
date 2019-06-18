@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/apim/static/css/1.5f1ed30c.chunk.css"
   },
   {
-    "revision": "324ead489cd2cafc97d8ea0e52673849",
+    "revision": "7de1a2df45545180dde5ac47b6fb4dd9",
     "url": "/apim/index.html"
   }
 ];
