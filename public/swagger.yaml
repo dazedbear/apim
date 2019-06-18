@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   description: "開發與測試 API 的遊樂場，僅提供學習與測試使用，內容隨時會更動，請勿在 Production 使用。"
   version: "0.0.2"
-  title: "Dazedbear API Playground"
+  title: "API Playground"
 servers: 
 - url: "https://api.dazedbear.pro/ajax"
 tags:
