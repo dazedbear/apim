@@ -16,16 +16,16 @@ const errorTemplate = (message = 'error message', exception) => ({
 	},
 });
 
-const pagingModel = (rawList = [], dataList = [], offset = 0) => {
+const pagingModel = (dataList = [], total = 0, offset = 0) => {
 	let finalOffset = -1;
 	if (dataList.length !== 0) {
-		finalOffset = offset > (rawList.length - 1) ? rawList.length - 1 : offset;
+		finalOffset = offset > total ? total : offset;
 	}
 	return {
 		dataList,
 		offset: finalOffset,
-		hasNext: (rawList.length - 1) > offset,
-		total: dataList.length,
+		hasNext: total > finalOffset,
+		total,
 	}
 };
 

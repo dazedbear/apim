@@ -28,14 +28,12 @@ const sortMovies = (movies = [], sortType, offset = 0, limit = 10) =>
       case 'latest': {
         const result = movies
           .sort((prev, next) => dayjs(prev.startDate).millisecond() > dayjs(next.startDate).millisecond())
-          .slice(offset, parseInt(offset) + parseInt(limit));
         return resolve(result)
       }
 
       case 'hot': {
         const result = movies
           .sort((prev, next) => prev.hitRate > next.hitRate)
-          .slice(offset, parseInt(offset) + parseInt(limit));
         return resolve(result)
       }
 
@@ -43,7 +41,6 @@ const sortMovies = (movies = [], sortType, offset = 0, limit = 10) =>
         const result = movies
           .filter(event => event.showInfo.every(show => show.onSales === 'N'))
           .sort((prev, next) => dayjs(prev.startDate).millisecond() > dayjs(next.startDate).millisecond())
-          .slice(offset, parseInt(offset) + parseInt(limit));
         return resolve(result);
       }
 
@@ -65,19 +62,21 @@ exports.handler = async (event, context) => {
       // 帶入 API Gateway 的參數得到電影列表
       const { limit, offset } = (event.queryStringParameters || {})
       const { sortType } = (event.pathParameters || {})
-      return Promise.all([
-        movies,
-        sortMovies(movies, sortType, offset, limit)
-      ])
+      return Promise.resolve(sortMovies(movies, sortType, offset, limit))
     })
-    .then(([rawList, movieList]) => {
+    .then(sortedMovieList => {
       const { limit, offset } = (event.queryStringParameters || {})
-      const nextOffset = parseInt(offset || 0) + parseInt(limit || 10);
-      if (isNaN(nextOffset))
+      const startIdx = parseInt(offset || 0);
+      const endIdx = parseInt(offset || 0) + parseInt(limit || 10) - 1;
+      if (isNaN(startIdx) || isNaN(endIdx))
         return Promise.reject(validationError(`Invalid limit or offset: ${limit}, ${offset}`, 215))
+
+      const filterMovieList = sortedMovieList.slice(startIdx, endIdx);
       return lambdaProxyResponse({
         statusCode: 200,
-        body: resTemplate(pagingModel(rawList, movieList, nextOffset))
+        body: resTemplate(
+          pagingModel(filterMovieList, sortedMovieList.length, endIdx + 1)
+        )
       });
     })
     .catch(e => {
@@ -87,5 +86,6 @@ exports.handler = async (event, context) => {
         body: e.isUserError ? warnTemplate(e.message, e.code) : errorTemplate(e.message, e)
       })
     })
+  
   return result;
 }
