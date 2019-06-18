@@ -16,12 +16,18 @@ const errorTemplate = (message = 'error message', exception) => ({
 	},
 });
 
-const pagingModel = (rawList = [], dataList = [], offset = 0) => ({
-  dataList,
-  offset,
-  hasNext: (rawList.length - 1) > offset,
-  total: rawList.length,
-})
+const pagingModel = (rawList = [], dataList = [], offset = 0) => {
+	let finalOffset = -1;
+	if (dataList.length !== 0) {
+		finalOffset = offset > (rawList.length - 1) ? rawList.length - 1 : offset;
+	}
+	return {
+		dataList,
+		offset: finalOffset,
+		hasNext: (rawList.length - 1) > offset,
+		total: dataList.length,
+	}
+};
 
 const validationError = (message = '', code = 0) => {
 	let e = new Error(message);
