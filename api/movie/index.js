@@ -1,13 +1,9 @@
 /**
  * AWS Lambda to request travis build manually
  */
-const fetch = require('node-fetch');
 const dayjs = require('dayjs');
-const redis = require('redis');
-const { promisify } = require('util');
 const { resTemplate, warnTemplate, errorTemplate, validationError, pagingModel, lambdaProxyResponse } = require('/opt/nodejs/util');
-
-const openDataAPI = 'https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=8';
+const { rawMovieList } = require('/opt/nodejs/mock');
 
 /**
  * 排序並取得指定長度與位置的電影列表
@@ -62,50 +58,9 @@ const sortMovies = (movies = [], sortType, offset = 0, limit = 10) =>
  * https://docs.aws.amazon.com/zh_tw/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
  */
 exports.handler = async (event, context) => {
-  const { REDIS_USER, REDIS_PASSWORD, REDIS_SERVER_HOST, REDIS_SERVER_PORT } = process.env;
-
-  const redisClient = redis.createClient(`redis://${REDIS_USER}:${REDIS_PASSWORD}@${REDIS_SERVER_HOST}:${REDIS_SERVER_PORT}`);
-  const getAsync = promisify(redisClient.get).bind(redisClient)
-  const setAsync = promisify(redisClient.set).bind(redisClient)
-  const expireAsync = promisify(redisClient.expire).bind(redisClient)
 
   // 檢查快取是否有資料
-  const result = await getAsync('movieRawData')
-    .then(movieCacheData => {
-      if (!movieCacheData) {
-        const option = {
-          method: "get",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-          }
-        }
-        // 取得電影原始資料
-        return fetch(openDataAPI, option)
-          .then(res => res.ok ? res.json() : Promise.reject(res))
-          // 存進 redis，設定一天後過期
-          .then(rawData => {
-            console.log('Recieve data from government open data success!');
-            return Promise.all([
-              rawData,
-              setAsync('movieRawData', JSON.stringify(rawData))
-            ])
-           })
-          .then(([rawData, reply]) => Promise.all([
-            rawData,
-            expireAsync('movieRawData', 86400)
-          ]))
-          .then(([rawData, reply]) => {
-            console.log('Refresh movie cache data success!');
-            return rawData;
-          })
-          .catch(e => {
-            redisClient.end(true)
-            return Promise.reject(e);
-          });
-      }
-      return JSON.parse(movieCacheData);
-    })
+  const result = await Promise.resolve(rawMovieList)
     .then(movies => {
       // 帶入 API Gateway 的參數得到電影列表
       const { limit, offset } = (event.queryStringParameters || {})
@@ -132,12 +87,5 @@ exports.handler = async (event, context) => {
         body: e.isUserError ? warnTemplate(e.message, e.code) : errorTemplate(e.message, e)
       })
     })
-  await redisClient.quit((err, reply) => {
-    if (err) {
-      console.error(err);
-      return redisClient.end(true);
-    }
-    console.log('Close connection with redis server success!');
-  });
   return result;
 }
