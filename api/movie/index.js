@@ -41,7 +41,7 @@ const sortMovies = (movies = [], sortType, offset = 0, limit = 10) =>
 
       case 'free': {
         const result = movies
-          .filter(event => event.onSales === 'N')
+          .filter(event => event.showInfo.every(show => show.onSales === 'N'))
           .sort((prev, next) => dayjs(prev.startDate).millisecond() > dayjs(next.startDate).millisecond())
           .slice(offset, parseInt(offset) + parseInt(limit));
         return resolve(result);
