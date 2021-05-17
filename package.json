@@ -2,7 +2,7 @@
   "name": "api-playground",
   "version": "0.0.2",
   "description": "開發與測試 API 的遊樂場，僅提供學習與測試使用，內容隨時會更動，請勿在 Production 使用。",
-  "homepage": "https://www.dazedbear.pro/apim/",
+  "homepage": ".",
   "keywords": [
     "swagger"
   ],
